@@ -395,7 +395,6 @@ static void keyboard_handle_key(void *data, struct wl_keyboard *wl_keyboard,
 
     state = state == WL_KEYBOARD_KEY_STATE_PRESSED ? MP_KEY_STATE_DOWN
                                                    : MP_KEY_STATE_UP;
-
     int mpmod = get_mods(wl);
     int mpkey = lookupkey(sym);
     if (mpkey) {
@@ -414,8 +413,10 @@ static void keyboard_handle_modifiers(void *data, struct wl_keyboard *wl_keyboar
 {
     struct vo_wayland_state *wl = data;
 
-    xkb_state_update_mask(wl->xkb_state, mods_depressed, mods_latched,
-                          mods_locked, 0, 0, group);
+    if (wl->xkb_state) {
+        xkb_state_update_mask(wl->xkb_state, mods_depressed, mods_latched,
+                              mods_locked, 0, 0, group);
+    }
 }
 
 static void keyboard_handle_repeat_info(void *data, struct wl_keyboard *wl_keyboard,
@@ -1426,8 +1427,9 @@ static int spawn_cursor(struct vo_wayland_state *wl)
     else if (wl->cursor_theme)
         wl_cursor_theme_destroy(wl->cursor_theme);
 
+    const char *xcursor_theme = getenv("XCURSOR_THEME");
     const char *size_str = getenv("XCURSOR_SIZE");
-    int size = 32;
+    int size = 24;
     if (size_str != NULL) {
         errno = 0;
         char *end;
@@ -1436,7 +1438,7 @@ static int spawn_cursor(struct vo_wayland_state *wl)
             size = (int)size_long;
     }
 
-    wl->cursor_theme = wl_cursor_theme_load(NULL, size*wl->scaling, wl->shm);
+    wl->cursor_theme = wl_cursor_theme_load(xcursor_theme, size*wl->scaling, wl->shm);
     if (!wl->cursor_theme) {
         MP_ERR(wl, "Unable to load cursor theme!\n");
         return 1;

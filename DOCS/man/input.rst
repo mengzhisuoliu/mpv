@@ -344,6 +344,10 @@ Remember to quote string arguments in input.conf (see `Flat command syntax`_).
     the minimum, on underflow set it to the maximum. If ``up`` or ``down`` is
     omitted, assume ``up``.
 
+    Whether or not key-repeat is enabled by default depends on the property.
+    Currently properties with continuous values are repeatable by default (like
+    ``volume``), while discrete values are not (like ``osd-level``).
+
 ``multiply <name> <value>``
     Similar to ``add``, but multiplies the property or option with the numeric
     value.
@@ -1702,7 +1706,9 @@ prefixes can be specified. They are separated by whitespace.
     This is the default for ``input.conf`` commands.
 ``repeatable``
     For some commands, keeping a key pressed doesn't run the command repeatedly.
-    This prefix forces enabling key repeat in any case.
+    This prefix forces enabling key repeat in any case. For a list of commands:
+    the first command determines the repeatability of the whole list (up to and
+    including version 0.33 - a list was always repeatable).
 ``async``
     Allow asynchronous execution (if possible). Note that only a few commands
     will support this (usually this is explicitly documented). Some commands
@@ -3057,13 +3063,14 @@ Property list
 
     .. admonition:: Example
 
-        - ``--osd-status-msg='This is ${osd-ass-cc/0}{\\b1}bold text'``
-        - ``show-text "This is ${osd-ass-cc/0}{\b1}bold text"``
+        - ``--osd-msg3='This is ${osd-ass-cc/0}{\\b1}bold text'``
+        - ``show-text "This is ${osd-ass-cc/0}{\\b1}bold text"``
 
     Any ASS override tags as understood by libass can be used.
 
     Note that you need to escape the ``\`` character, because the string is
-    processed for C escape sequences before passing it to the OSD code.
+    processed for C escape sequences before passing it to the OSD code. See
+    `Flat command syntax`_ for details.
 
     A list of tags can be found here: http://docs.aegisub.org/latest/ASS_Tags/
 

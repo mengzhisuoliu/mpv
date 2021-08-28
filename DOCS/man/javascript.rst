@@ -58,7 +58,7 @@ Language features - ECMAScript 5
 The scripting backend which mpv currently uses is MuJS - a compatible minimal
 ES5 interpreter. As such, ``String.substring`` is implemented for instance,
 while the common but non-standard ``String.substr`` is not. Please consult the
-MuJS pages on language features and platform support - http://mujs.com .
+MuJS pages on language features and platform support - https://mujs.com .
 
 Unsupported Lua APIs and their JS alternatives
 ----------------------------------------------
@@ -222,7 +222,7 @@ Additional utilities
 ``mp.utils.get_user_path(path)``
     Expands (mpv) meta paths like ``~/x``, ``~~/y``, ``~~desktop/z`` etc.
     ``read_file``, ``write_file``, ``append_file`` and ``require`` already use
-    this internaly.
+    this internally.
 
 ``mp.utils.read_file(fname [,max])``
     Returns the content of file ``fname`` as string. If ``max`` is provided and
