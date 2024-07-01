@@ -20,6 +20,14 @@
  * License along with mpv.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// For FreeBSD where spa/param/audio/raw.h expects those to be defined
+#include "osdep/endian.h"
+#ifndef __BYTE_ORDER
+#define __BYTE_ORDER    BYTE_ORDER
+#define __LITTLE_ENDIAN LITTLE_ENDIAN
+#define __BIG_ENDIAN    BIG_ENDIAN
+#endif
+
 #include <pipewire/pipewire.h>
 #include <pipewire/global.h>
 #include <spa/param/audio/format-utils.h>
@@ -50,9 +58,9 @@ static inline int pw_stream_get_time_n(struct pw_stream *stream, struct pw_time 
 #if !PW_CHECK_VERSION(1, 0, 4)
 static uint64_t pw_stream_get_nsec(struct pw_stream *stream)
 {
-	struct timespec ts;
-	clock_gettime(CLOCK_MONOTONIC, &ts);
-	return SPA_TIMESPEC_TO_NSEC(&ts);
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return SPA_TIMESPEC_TO_NSEC(&ts);
 }
 #endif
 
@@ -206,7 +214,7 @@ static void on_process(void *userdata)
 #endif
     end_time -= pw_stream_get_nsec(p->stream) - time.now;
 
-    int samples = ao_read_data_nonblocking(ao, data, nframes, end_time);
+    int samples = ao_read_data(ao, data, nframes, end_time, NULL, false, false);
     b->size = samples;
 
     for (int i = 0; i < buf->n_datas; i++) {

@@ -157,7 +157,7 @@ void mp_print_version(struct mp_log *log, int always)
     // Only in verbose mode.
     if (!always) {
         mp_msg(log, MSGL_V, "Configuration: " CONFIGURATION "\n");
-        mp_msg(log, MSGL_V, "List of enabled features: %s\n", FULLCONFIG);
+        mp_msg(log, MSGL_V, "List of enabled features: " FULLCONFIG "\n");
         #ifdef NDEBUG
             mp_msg(log, MSGL_V, "Built with NDEBUG.\n");
         #endif
@@ -227,6 +227,9 @@ static bool handle_help_options(struct MPContext *mpctx)
 
 static int cfg_include(void *ctx, char *filename, int flags)
 {
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+    return 1;
+#endif
     struct MPContext *mpctx = ctx;
     char *fname = mp_get_user_path(NULL, mpctx->global, filename);
     int r = m_config_parse_config_file(mpctx->mconfig, mpctx->global, fname, NULL, flags);
